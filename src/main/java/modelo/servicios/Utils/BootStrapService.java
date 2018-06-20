@@ -35,7 +35,7 @@ public class BootStrapService {
         String sqlEtiqueta = "CREATE TABLE IF NOT EXISTS ETIQUETA \n"+
                 "(\n" +
                 "ID INTEGER PRIMARY KEY NOT NULL, \n" +
-                "ETIQUETA VARCHAR(50) NOT NULL, \n" +
+                "ETIQUETA TEXT NOT NULL, \n" +
                 "ARTICULO INTEGER NOT NULL , \n" +
                 "FOREIGN KEY (ARTICULO) REFERENCES ARTICULO(ID)" +
                 "ON DELETE CASCADE );";
@@ -44,7 +44,7 @@ public class BootStrapService {
         String sqlComentario = "CREATE TABLE IF NOT EXISTS COMENTARIO \n"+
                 "(\n" +
                 "ID INTEGER PRIMARY KEY NOT NULL, \n" +
-                "COMENTARIO VARCHAR(250) NOT NULL, \n" +
+                "COMENTARIO TEXT NOT NULL, \n" +
                 "AUTOR INTEGER NOT NULL , \n" +
                 "ARTICULO INTEGER NOT NULL , \n" +
                 "FOREIGN KEY (AUTOR) REFERENCES USUARIO(ID), \n" +
@@ -55,7 +55,7 @@ public class BootStrapService {
                 "(\n" +
                 "ID INTEGER PRIMARY KEY NOT NULL, \n" +
                 "TITULO VARCHAR(250) NOT NULL, \n" +
-                "CUERPO VARCHAR(250) NOT NULL, \n" +
+                "CUERPO TEXT NOT NULL, \n" +
                 "AUTOR INTEGER NOT NULL, \n " +
                 "FECHA DATE NOT NULL , \n" +
                 "FOREIGN KEY (AUTOR) REFERENCES USUARIO(ID)" +

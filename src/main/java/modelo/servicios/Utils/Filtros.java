@@ -1,5 +1,6 @@
 package modelo.servicios.Utils;
 
+import encapsulacion.Usuario;
 import main.Main;
 
 import static spark.Spark.*;
@@ -10,35 +11,36 @@ public class Filtros {
     public void filtros() {
 
 
-        before((request, response) -> {
+        before("/agregarPost", (request, response) -> {
 
-            System.out.println("Ruta del request antes: " + request.pathInfo());
-            boolean error = false;
+            Usuario usuario = request.session(true).attribute("usuario");
 
-            if (request.pathInfo().equalsIgnoreCase("/agregarPost")) {
+            if (usuario == null || !usuario.getAutor()){
 
-
-                if (Main.usuario == null) {
-                    error = true;
-                }
+                halt(401, "No tienes permiso para esta area");
             }
 
-            if (request.pathInfo().equalsIgnoreCase("/agregarUsuario")) {
+        });
 
-                if (Main.usuario == null || !Main.usuario.getAdministrator())
-                    error = true;
+        before("/agregarUsuario", (request, response) -> {
 
+            Usuario usuario = request.session(true).attribute("usuario");
+
+            if (usuario == null || !usuario.getAdministrator()){
+
+                halt(401, "No tienes permiso para esta area");
             }
 
-            if (request.pathInfo().equalsIgnoreCase("/agregarComentario")) {
+        });
 
-                if (Main.usuario == null)
-                    error = true;
+        before("/agregarComentario", (request, response) -> {
+
+            Usuario usuario = request.session(true).attribute("usuario");
+
+            if (usuario == null){
+
+                halt(401, "No tienes permiso para esta area");
             }
-
-            if (error)
-                response.redirect("/errorPost");
-
 
         });
 

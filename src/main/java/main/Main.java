@@ -15,6 +15,7 @@ import modelo.servicios.Utils.Crypto;
 import modelo.servicios.Utils.Filtros;
 //import org.jasypt.util.text.StrongTextEncryptor;
 import spark.ModelAndView;
+import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import java.util.*;
@@ -61,9 +62,7 @@ public class Main {
 
             }
 
-            if (request.cookie("login") != null){
 
-            }
 
             if (llaveValor.length > 1){
                 Crypto crypto = new Crypto();
@@ -75,8 +74,8 @@ public class Main {
                 Usuario usuario1 = usuarioService.validateLogIn(user, contra);
                 if (usuario1 != null) {
                     usuario = usuario1;
-//                    attributes.put("usuario", usuario);
-//                    attributes.put("titulo", "Posts");
+                    request.session(true);
+                    request.session().attribute("usuario", usuario);
                     response.redirect("/inicio");
 //                    return modelAndView(attributes, "inicio.ftl");
                 }
@@ -215,13 +214,17 @@ public class Main {
                     String userEncrypt = crypto.encrypt(user, iv, secretKeyUSer);
                     String contraEncrypt = crypto.encrypt(contra, iv, secretKeyContra);
 
+
 //                final String decryptedData = crypto.decrypt(encryptedData, iv, secretKey);
 
                     System.out.println("user encryp: " + userEncrypt + " contra encryp: " + contraEncrypt);
 
                     response.cookie("/", "login", userEncrypt + "," + contraEncrypt, 604800, false); //incluyendo el path del cookie.
                 }
+
                 usuario = usuario1;
+                request.session(true);
+                request.session().attribute("usuario", usuario);
                 response.redirect("/inicio");
             }
             return "";
@@ -305,6 +308,8 @@ public class Main {
         get("/logOut", (request, response) -> {
 
             usuario = null;
+            Session session = request.session(true);
+            session.invalidate();
             response.removeCookie("/", "login");
             response.redirect("/inicio");
 

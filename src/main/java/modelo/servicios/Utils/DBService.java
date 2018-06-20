@@ -20,7 +20,7 @@ public class DBService {
         Connection connection = null;
 
         try {
-            String url = "jdbc:h2:~/blog";
+            String url = "jdbc:h2:tcp://localhost/~/blog";
             connection = DriverManager.getConnection(url, "", "");
         }catch (Exception e){
             Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, e);
