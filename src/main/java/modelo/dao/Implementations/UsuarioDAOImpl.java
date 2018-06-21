@@ -17,6 +17,7 @@ import modelo.servicios.Utils.CRUD;
 import modelo.servicios.Utils.DBService;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 public class UsuarioDAOImpl extends CRUD<Usuario> implements UsuarioDAO {
@@ -61,11 +62,21 @@ public class UsuarioDAOImpl extends CRUD<Usuario> implements UsuarioDAO {
     @Override
     public Usuario validateLogIn(String user, String pass) {
 
+        Usuario usuario= null;
         EntityManager em = getEntityManager();
         Query query = em.createNamedQuery("Usuario.validateLogIn");
         query.setParameter("username", user);
         query.setParameter("pass", pass);
-        return (Usuario) query.getSingleResult();
+        try {
+            usuario = (Usuario) query.getSingleResult();
+        }catch (NoResultException e){
+
+            System.out.println("No se encontro el usuario.");
+        }
+
+        return usuario;
+
+
     }
 
 
