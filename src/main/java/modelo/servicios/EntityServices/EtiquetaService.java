@@ -8,9 +8,17 @@ import java.util.List;
 
 public class EtiquetaService implements EtiquetaDAO {
     private EtiquetaDAOImpl etiquetaDAO;
+    private static EtiquetaService instancia;
+
+    public static EtiquetaService getInstancia(){
+        if (instancia == null)
+            instancia = new EtiquetaService();
+
+        return instancia;
+    }
 
     public EtiquetaService() {
-        etiquetaDAO = new EtiquetaDAOImpl();
+        etiquetaDAO = new EtiquetaDAOImpl(Etiqueta.class);
     }
 
     @Override

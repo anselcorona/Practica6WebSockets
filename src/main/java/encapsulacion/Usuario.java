@@ -1,12 +1,25 @@
 package encapsulacion;
 
+import javax.persistence.*;
+
+@Entity
+@NamedQueries({@NamedQuery(name = "Usuario.findAllUsuario", query = "select u from Usuario u"),
+        @NamedQuery(name = "Usuario.findUsuariobyId", query = "select u from Usuario u where u.id = :id"),
+        @NamedQuery(name = "Usuario.validateLogIn", query = "select u from Usuario u where u.username = :username and u.password = :pass")})
 public class Usuario {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column
     private String username;
+    @Column
     private String nombre;
+    @Column
     private String password;
+    @Column
     private Boolean administrator;
+    @Column
     private Boolean autor;
 
     public Usuario() {

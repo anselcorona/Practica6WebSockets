@@ -10,13 +10,15 @@ public interface ArticuloDAO {
 
     void update(Articulo e);
 
-    long getNextID();
-
     void delete(Articulo e);
 
     List<Articulo> getAll();
 
     List<Articulo> getbyAutor(long id);
 
+    List<Articulo> getPagination(int pag);
+
     Articulo getById(long id);
+
+
 }

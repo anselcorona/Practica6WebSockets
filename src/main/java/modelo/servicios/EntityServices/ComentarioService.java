@@ -8,9 +8,16 @@ import java.util.List;
 
 public class ComentarioService implements ComentarioDAO {
     private ComentarioDAOImpl comentarioDAO;
+    private static ComentarioService instancia;
 
+    public static ComentarioService getInstancia(){
+        if (instancia == null)
+            instancia = new ComentarioService();
+
+        return instancia;
+    }
     public ComentarioService() {
-        comentarioDAO = new ComentarioDAOImpl();
+        comentarioDAO = new ComentarioDAOImpl(Comentario.class);
     }
 
     @Override

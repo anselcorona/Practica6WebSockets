@@ -86,9 +86,33 @@ public class Main {
         get("/inicio", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Inicio");
-
+            attributes.put("pagina", 0);
             attributes.put("etiquetas", etiquetaService.getAll());
             attributes.put("list", articuloService.getAll());
+            attributes.put("usuario", usuario);
+
+            return new ModelAndView(attributes, "inicio.ftl");
+        }, freeMarkerEngine);
+
+        get("/inicio/pag/:n/:operacion", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            String pag = request.params("n");
+
+            String op = request.params("operacion");
+            int pagina = Integer.parseInt(pag);
+            if (op.equalsIgnoreCase("mas")){
+                pagina++;
+            }else {
+                pagina--;
+            }
+
+
+            attributes.put("titulo", "Inicio");
+
+            attributes.put("list", articuloService.getPagination(pagina));
+
+            attributes.put("pagina", pagina);
+            attributes.put("etiquetas", etiquetaService.getAll());
             attributes.put("usuario", usuario);
 
             return new ModelAndView(attributes, "inicio.ftl");
@@ -101,8 +125,8 @@ public class Main {
 
             Articulo articulo2 = articuloService.getById(Integer.parseInt(idArticulo));
             attributes.put("articulo", articulo2);
-            attributes.put("comentarios", comentarioService.getByArticulo(Integer.parseInt(idArticulo)));
-            attributes.put("etiquetas", etiquetaService.getByArticulo(Integer.parseInt(idArticulo)));
+            attributes.put("comentarios", articulo2.getListaComentarios());
+            attributes.put("etiquetas", articulo2.getListaEtiquetas());
 
             return new ModelAndView(attributes, "post.ftl");
         }, freeMarkerEngine);
@@ -119,6 +143,10 @@ public class Main {
 
             Usuario usuario1 = usuarioService.getById(Integer.parseInt(autor));
             Articulo articulo1 = articuloService.getById(Integer.parseInt(articulo));
+
+            Comentario comentario1 = new Comentario(comentario, usuario1, articulo1);
+
+            articulo1.getListaComentarios().add(comentario1);
 
             comentarioService.insert(new Comentario(comentario, usuario1, articulo1));
 
@@ -178,13 +206,13 @@ public class Main {
             String etiquetas = request.queryParams("etiquetas");
 
             String[] tagsarray = etiquetas.split(",");
-            Long articleid = articuloService.getNextID();
+//            Long articleid = articuloService.getNextID();
             Articulo art = new Articulo(titulo, cuerpo, autor, nowsql);
             articuloService.insert(art);
-
+//
 
             for(String s : tagsarray){
-                Etiqueta e = new Etiqueta(s, articuloService.getById(articleid));
+                Etiqueta e = new Etiqueta(s, art);
                 etiquetaService.insert(e);
             }
 

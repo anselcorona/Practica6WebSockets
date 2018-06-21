@@ -95,12 +95,18 @@
 
                 <!-- Pagination -->
                 <ul class="pagination justify-content-center mb-4">
-                    <li class="page-item">
-                        <a class="page-link" href="#">&larr; Older</a>
-                    </li>
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">Newer &rarr;</a>
-                    </li>
+                    <#if (pagina??)>
+                           <#if (pagina?number != 0)>
+                      <li class="page-item">
+                          <a class="page-link" href="/inicio/pag/${pagina}/menos">&larr; Older</a>
+                      </li>
+                           </#if>
+
+                        <li class="page-item">
+                            <a class="page-link" href="/inicio/pag/${pagina}/mas">Newer &rarr;</a>
+                        </li>
+                    </#if>
+
                 </ul>
 
             </div>

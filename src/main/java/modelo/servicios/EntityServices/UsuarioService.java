@@ -7,11 +7,18 @@ import modelo.dao.Implementations.UsuarioDAOImpl;
 import java.util.List;
 
 public class UsuarioService implements UsuarioDAO {
+    private static UsuarioService instancia;
 
+    public static UsuarioService getInstancia(){
+        if (instancia == null)
+            instancia = new UsuarioService();
+
+        return instancia;
+    }
     private UsuarioDAOImpl usuarioDAO;
 
     public UsuarioService(){
-        usuarioDAO = new UsuarioDAOImpl();
+        usuarioDAO = new UsuarioDAOImpl(Usuario.class);
     }
 
     @Override

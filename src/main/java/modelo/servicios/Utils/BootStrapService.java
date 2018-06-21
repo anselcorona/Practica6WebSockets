@@ -63,7 +63,7 @@ public class BootStrapService {
 
 
 
-        String admin = "INSERT INTO USUARIO VALUES (SECUENCIA_USUARIO.nextval, 'admin', 'admin', 'admin',"+true+", "+true+")";
+//        String admin = "INSERT INTO USUARIO VALUES (SECUENCIA_USUARIO.nextval, 'admin', 'admin', 'admin',"+true+", "+true+")";
         String secuenciaUsuario = "CREATE SEQUENCE IF NOT EXISTS SECUENCIA_USUARIO START WITH 0 INCREMENT BY 1";
         String secuenciaArticulo = "CREATE SEQUENCE IF NOT EXISTS SECUENCIA_ARTICULO START WITH 0 INCREMENT BY 1";
         String secuenciaEtiqueta= "CREATE SEQUENCE IF NOT EXISTS SECUENCIA_ETIQUETA START WITH 0 INCREMENT BY 1";
@@ -71,29 +71,31 @@ public class BootStrapService {
 
 
 
-        Connection connection = DBService.getInstancia().connection();
-        Statement statement = connection.createStatement();
-
-        statement.execute(sqlUsuario);
-        statement.execute(sqlArticulo);
-        statement.execute(sqlEtiqueta);
-        statement.execute(sqlComentario);
-
-        statement.execute(secuenciaUsuario);
-        statement.execute(secuenciaArticulo);
-        statement.execute(secuenciaEtiqueta);
-        statement.execute(secuenciaComentario);
+//        Connection connection = DBService.getInstancia().connection();
+//        Statement statement = connection.createStatement();
+//
+//        statement.execute(sqlUsuario);
+//        statement.execute(sqlArticulo);
+//        statement.execute(sqlEtiqueta);
+//        statement.execute(sqlComentario);
+//
+//        statement.execute(secuenciaUsuario);
+//        statement.execute(secuenciaArticulo);
+//        statement.execute(secuenciaEtiqueta);
+//        statement.execute(secuenciaComentario);
 
         UsuarioService usuarioService = new UsuarioService();
-        Usuario usuario = usuarioService.validateLogIn("admin", "admin");
 
-        if (usuario == null){
-            statement.execute(admin);
+        Usuario usuario = new Usuario("admin", "admin", "admin", true,true);
+
+
+        if (usuarioService.validateLogIn("admin", "admin") == null){
+            usuarioService.insert(usuario);
         }
 
 
-
-        statement.close();
-        connection.close();
+//
+//        statement.close();
+//        connection.close();
     }
 }

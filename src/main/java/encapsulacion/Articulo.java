@@ -1,17 +1,33 @@
 package encapsulacion;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
-public class Articulo {
+@Entity
+@NamedQueries({@NamedQuery(name = "Articulo.findAllArticulo", query = "select a from Articulo a"),
+        @NamedQuery(name = "Articulo.findArticulobyAuthorId", query = "select a from Articulo a where a.autor = :id"),
+        @NamedQuery(name = "Articulo.findArticulobyId", query = "select a from Articulo a where a.id = :id")})
+public class Articulo implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column
     private String titulo;
+    @Column(columnDefinition = "text")
     private String cuerpo;
+    @OneToOne
     private Usuario autor;
+    @Column
     private Date fecha;
-    private List<Comentario> listaComentarios;
-    private List<Etiqueta> listaEtiquetas;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Comentario> listaComentarios;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Etiqueta> listaEtiquetas;
 
     public Articulo() {
     }
@@ -71,19 +87,19 @@ public class Articulo {
         this.fecha = fecha;
     }
 
-    public List<Comentario> getListaComentarios() {
+    public Set<Comentario> getListaComentarios() {
         return listaComentarios;
     }
 
-    public void setListaComentarios(List<Comentario> listaComentarios) {
+    public void setListaComentarios(Set<Comentario> listaComentarios) {
         this.listaComentarios = listaComentarios;
     }
 
-    public List<Etiqueta> getListaEtiquetas() {
+    public Set<Etiqueta> getListaEtiquetas() {
         return listaEtiquetas;
     }
 
-    public void setListaEtiquetas(List<Etiqueta> listaEtiquetas) {
+    public void setListaEtiquetas(Set<Etiqueta> listaEtiquetas) {
         this.listaEtiquetas = listaEtiquetas;
     }
 }

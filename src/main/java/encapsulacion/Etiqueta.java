@@ -1,9 +1,19 @@
 package encapsulacion;
 
+import javax.persistence.*;
+
+@Entity
+@NamedQueries({@NamedQuery(name = "Etiqueta.findAllEtiqueta", query = "select e from Etiqueta e"),
+        @NamedQuery(name = "Etiqueta.findEtiquetaById", query = "select e from Etiqueta e where e.id = :id"),
+        @NamedQuery(name = "Etiqueta.findAllEtiquetaByArticuloId", query = "select e from Etiqueta e join Articulo a on a.id = :id")})
 public class Etiqueta {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column
     private String etiqueta;
+    @ManyToOne
     private Articulo articulo;
 
     public Etiqueta() {

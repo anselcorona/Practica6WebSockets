@@ -8,9 +8,17 @@ import java.util.List;
 
 public class ArticuloService implements ArticuloDAO {
     private ArticuloDAOImpl articuloDAO;
+    private static ArticuloService instancia;
+
+    public static ArticuloService getInstancia(){
+        if (instancia == null)
+            instancia = new ArticuloService();
+
+        return instancia;
+    }
 
     public ArticuloService(){
-        articuloDAO = new ArticuloDAOImpl();
+        articuloDAO = new ArticuloDAOImpl(Articulo.class);
     }
 
     @Override
@@ -21,11 +29,6 @@ public class ArticuloService implements ArticuloDAO {
     @Override
     public void update(Articulo e) {
         articuloDAO.update(e);
-    }
-
-    @Override
-    public long getNextID() {
-        return articuloDAO.getNextID();
     }
 
     @Override
@@ -46,6 +49,11 @@ public class ArticuloService implements ArticuloDAO {
     @Override
     public List<Articulo> getbyAutor(long id) {
         return articuloDAO.getbyAutor(id);
+    }
+
+    @Override
+    public List<Articulo> getPagination(int pag) {
+        return articuloDAO.getPagination(pag);
     }
 
 
