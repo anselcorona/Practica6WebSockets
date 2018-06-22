@@ -1,30 +1,17 @@
 package modelo.dao.Implementations;
 
 import encapsulacion.Articulo;
-import encapsulacion.Usuario;
 import modelo.dao.interfaces.ArticuloDAO;
-import modelo.servicios.EntityServices.ArticuloService;
-import modelo.servicios.EntityServices.EtiquetaService;
-import modelo.servicios.EntityServices.UsuarioService;
 import modelo.servicios.Utils.CRUD;
-import modelo.servicios.Utils.DBService;
-import org.hibernate.Criteria;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ArticuloDAOImpl extends CRUD<Articulo> implements ArticuloDAO  {
 
@@ -53,7 +40,9 @@ public class ArticuloDAOImpl extends CRUD<Articulo> implements ArticuloDAO  {
     @Override
     public List<Articulo> getAll() {
 
-        return findAll();
+        EntityManager em = getEntityManager();
+        Query query = em.createNamedQuery("Articulo.findAllArticulo");
+        return (List<Articulo>) query.getResultList();
     }
 
     @Override
@@ -72,10 +61,14 @@ public class ArticuloDAOImpl extends CRUD<Articulo> implements ArticuloDAO  {
         CriteriaQuery<Articulo> criteriaQuery = builder.createQuery(Articulo.class);
         Root<Articulo> from = criteriaQuery.from(Articulo.class);
         CriteriaQuery<Articulo> select = criteriaQuery.select(from);
+        List<javax.persistence.criteria.Order> orderList = new ArrayList();
 
+        orderList.add(builder.asc(from.get("fecha")));
+        criteriaQuery.orderBy(orderList);
         TypedQuery<Articulo> typedQuery = em.createQuery(select);
-        typedQuery.setFirstResult((pag) * 5);
+        typedQuery.setFirstResult((pag-1)*5);
         typedQuery.setMaxResults(5);
+
 
         return typedQuery.getResultList();
     }
@@ -85,6 +78,14 @@ public class ArticuloDAOImpl extends CRUD<Articulo> implements ArticuloDAO  {
     public Articulo getById(long id) {
 
        return find(id);
+    }
+
+    @Override
+    public List<Articulo> getAllByEtiqueta(String etiqueta) {
+        EntityManager em = getEntityManager();
+        Query query = em.createNamedQuery("Articulo.findArticulobyEtiqueta");
+        query.setParameter("etiqueta", etiqueta);
+        return (List<Articulo>) query.getResultList();
     }
 
 

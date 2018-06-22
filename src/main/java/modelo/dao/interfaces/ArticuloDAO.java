@@ -20,5 +20,7 @@ public interface ArticuloDAO {
 
     Articulo getById(long id);
 
+    List<Articulo> getAllByEtiqueta(String etiqueta);
+
 
 }

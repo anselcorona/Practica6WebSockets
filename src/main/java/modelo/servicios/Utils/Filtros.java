@@ -10,6 +10,7 @@ public class Filtros {
 
     public void filtros() {
 
+        before((request, response) -> System.out.println(  "Ruta antes: " + request.pathInfo() ));
 
         before("/agregarPost", (request, response) -> {
 

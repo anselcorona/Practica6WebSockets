@@ -84,11 +84,14 @@ public class Main {
         }, freeMarkerEngine);
 
         get("/inicio", (request, response) -> {
+
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Inicio");
-            attributes.put("pagina", 0);
-            attributes.put("etiquetas", etiquetaService.getAll());
+
             attributes.put("list", articuloService.getAll());
+
+
+            attributes.put("etiquetas", etiquetaService.getAll());
             attributes.put("usuario", usuario);
 
             return new ModelAndView(attributes, "inicio.ftl");
@@ -97,7 +100,6 @@ public class Main {
         get("/inicio/pag/:n/:operacion", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
             String pag = request.params("n");
-
             String op = request.params("operacion");
             int pagina = Integer.parseInt(pag);
             if (op.equalsIgnoreCase("mas")){
@@ -131,6 +133,20 @@ public class Main {
             return new ModelAndView(attributes, "post.ftl");
         }, freeMarkerEngine);
 
+        get("/articulos", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+            String etiqueta = request.queryParams("etiqueta");
+
+            attributes.put("titulo", "Articulos por " + etiqueta);
+            attributes.put("list", articuloService.getAllByEtiqueta(etiqueta));
+            attributes.put("etiquetas", etiquetaService.getAll());
+            attributes.put("usuario", usuario);
+
+
+
+            return new ModelAndView(attributes, "inicio.ftl");
+        }, freeMarkerEngine);
+
 
         post("/agregarComentario", (request, response) -> {
 
@@ -146,9 +162,7 @@ public class Main {
 
             Comentario comentario1 = new Comentario(comentario, usuario1, articulo1);
 
-            articulo1.getListaComentarios().add(comentario1);
-
-            comentarioService.insert(new Comentario(comentario, usuario1, articulo1));
+            comentarioService.insert(comentario1);
 
 
 
@@ -217,7 +231,7 @@ public class Main {
             }
 
 
-            response.redirect("/");
+            response.redirect("/inicio");
             return "";
         });
 

@@ -47,6 +47,11 @@ public class ArticuloService implements ArticuloDAO {
     }
 
     @Override
+    public List<Articulo> getAllByEtiqueta(String etiqueta) {
+        return articuloDAO.getAllByEtiqueta(etiqueta);
+    }
+
+    @Override
     public List<Articulo> getbyAutor(long id) {
         return articuloDAO.getbyAutor(id);
     }

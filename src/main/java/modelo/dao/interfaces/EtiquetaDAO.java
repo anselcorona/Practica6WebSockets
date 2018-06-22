@@ -22,4 +22,6 @@ public interface EtiquetaDAO {
      * @return lista de etiquetas.
      */
     List<Etiqueta> getByArticulo(long id);
+
+
 }
