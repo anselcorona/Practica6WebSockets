@@ -9,6 +9,9 @@
         <meta name="author" content="">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.css"/>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+
+
         <title>Blog - Practica 3</title>
 
         <!-- Bootstrap core CSS -->
@@ -89,6 +92,7 @@
                   <div class="card-footer text-muted">
                       Publicado el ${articulo.fecha} por
                       <a href="/ver/${articulo.autor.id}">${articulo.autor.nombre}</a>
+                      <a style="float: right" href="#" class="btn btn-primary btn-primary"><span class="far fa-thumbs-up"></span> Like</a>
                   </div>
               </div>
         </#list>

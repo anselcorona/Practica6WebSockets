@@ -7,8 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 
-    <title>Blog Post - Start Bootstrap Template</title>
+
+
+      <title>Blog Post - Start Bootstrap Template</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -82,6 +85,13 @@
             <div>
                 <a href="/editarPost/${articulo.id}" class="btn btn-primary">Editar Articulo</a>
                 <a href="/eliminarPost/${articulo.autor.id}/${articulo.id}" class="btn btn-primary">Eliminar Articulo</a>
+
+                <div style="float: right">
+                    <a  href="/dislike/${articulo.id}" class="btn btn-danger"><span class="far fa-thumbs-down"></span> Dislike (${cantDislikes})</a>
+
+                    <a  href="/like/${articulo.id}" class="btn btn-success"><span class="far fa-thumbs-up"></span> Like (${cantLikes})</a>
+                </div>
+
             </div>
 
 

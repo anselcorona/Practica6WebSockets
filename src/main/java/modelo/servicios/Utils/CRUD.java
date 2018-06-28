@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaQuery;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CRUD<T> {
 
@@ -11,8 +12,9 @@ public class CRUD<T> {
     private Class<T> tClass;
 
     public CRUD(Class<T> tClass){
-        if (entityManagerFactory == null)
+        if (entityManagerFactory == null){
             entityManagerFactory = Persistence.createEntityManagerFactory("UnidadPersistencia");
+        }
 
         this.tClass = tClass;
     }
@@ -71,13 +73,32 @@ public class CRUD<T> {
         }
     }
 
+    public void merge(T entidad) {
+
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        try {
+
+            em.merge(entidad);
+            em.getTransaction().commit();
+
+        }catch (Exception e){
+            em.getTransaction().rollback();
+        }finally {
+            em.close();
+        }
+
+    }
+
     public void editar(T entidad){
         EntityManager em = getEntityManager();
         em.getTransaction().begin();
         try {
             em.merge(entidad);
+            em.flush();
             em.getTransaction().commit();
         }catch (Exception ex){
+            System.out.println("Error actualizando: " + ex);
             em.getTransaction().rollback();
             throw  ex;
         } finally {
@@ -103,7 +124,6 @@ public class CRUD<T> {
             em.close();
         }
     }
-
     /**
      *
      * @param id

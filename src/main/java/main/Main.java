@@ -1,15 +1,9 @@
 package main;
 
-import encapsulacion.Articulo;
-import encapsulacion.Comentario;
-import encapsulacion.Etiqueta;
-import encapsulacion.Usuario;
+import encapsulacion.*;
 import freemarker.template.Configuration;
 import freemarker.template.Version;
-import modelo.servicios.EntityServices.ArticuloService;
-import modelo.servicios.EntityServices.ComentarioService;
-import modelo.servicios.EntityServices.EtiquetaService;
-import modelo.servicios.EntityServices.UsuarioService;
+import modelo.servicios.EntityServices.*;
 import modelo.servicios.Utils.BootStrapService;
 import modelo.servicios.Utils.Crypto;
 import modelo.servicios.Utils.Filtros;
@@ -29,18 +23,20 @@ public class Main {
     static final String iv = "0123456789123456"; // This has to be 16 characters
     static final String secretKeyUSer = "qwerty987654321";
     static final String secretKeyContra = "123456789klk";
+
     public static void main(String[] args) throws SQLException {
 
         BootStrapService.startDb();
 
         BootStrapService.crearTablas();
-        
 
 
         UsuarioService usuarioService = new UsuarioService();
-        ArticuloService  articuloService = new ArticuloService();
+        ArticuloService articuloService = new ArticuloService();
         EtiquetaService etiquetaService = new EtiquetaService();
         ComentarioService comentarioService = new ComentarioService();
+        LikesService likesService = new LikesService();
+
 
         staticFiles.location("/templates");
 
@@ -56,15 +52,14 @@ public class Main {
 
             String[] llaveValor = new String[2];
             request.cookie("login");
-            for (String key: cookies.keySet()) {
-                 System.out.println("llave: " + key + " valor: " + cookies.get(key));
-                 llaveValor = cookies.get(key).split(",");
+            for (String key : cookies.keySet()) {
+                System.out.println("llave: " + key + " valor: " + cookies.get(key));
+                llaveValor = cookies.get(key).split(",");
 
             }
 
 
-
-            if (llaveValor.length > 1){
+            if (llaveValor.length > 1) {
                 Crypto crypto = new Crypto();
 
                 System.out.println(llaveValor[0] + " contra: " + llaveValor[1]);
@@ -102,9 +97,9 @@ public class Main {
             String pag = request.params("n");
             String op = request.params("operacion");
             int pagina = Integer.parseInt(pag);
-            if (op.equalsIgnoreCase("mas")){
+            if (op.equalsIgnoreCase("mas")) {
                 pagina++;
-            }else {
+            } else {
                 pagina--;
             }
 
@@ -129,6 +124,9 @@ public class Main {
             attributes.put("articulo", articulo2);
             attributes.put("comentarios", articulo2.getListaComentarios());
             attributes.put("etiquetas", articulo2.getListaEtiquetas());
+            attributes.put("cantLikes", likesService.LikesByArticuloId(articulo2.getId()));
+            attributes.put("cantDislikes", likesService.DislikesByArticuloId(articulo2.getId()));
+            attributes.put("usuario", usuario);
 
             return new ModelAndView(attributes, "post.ftl");
         }, freeMarkerEngine);
@@ -137,11 +135,10 @@ public class Main {
             Map<String, Object> attributes = new HashMap<>();
             String etiqueta = request.queryParams("etiqueta");
 
-            attributes.put("titulo", "Articulos por " + etiqueta);
+            attributes.put("titulo", "Articulos por: " + etiqueta);
             attributes.put("list", articuloService.getAllByEtiqueta(etiqueta));
             attributes.put("etiquetas", etiquetaService.getAll());
             attributes.put("usuario", usuario);
-
 
 
             return new ModelAndView(attributes, "inicio.ftl");
@@ -150,7 +147,7 @@ public class Main {
 
         post("/agregarComentario", (request, response) -> {
 
-            if(usuario == null)
+            if (usuario == null)
                 response.redirect("/errorPost");
 
             String comentario = request.queryParams("comentario");
@@ -165,9 +162,8 @@ public class Main {
             comentarioService.insert(comentario1);
 
 
-
             response.redirect("/verMas/" + articulo);
-            return  "";
+            return "";
         });
 
         get("/agregarPost", (request, response) -> configuration.getTemplate("agregarPost.ftl"));
@@ -178,33 +174,31 @@ public class Main {
 
             List<Articulo> a = new ArrayList<>();
 
-            if (usuario != null  ){
+            if (usuario != null) {
 
                 a = articuloService.getbyAutor(usuario.getId());
-            }
-            else {
+            } else {
                 response.redirect("/errorPost");
             }
 
-            if ( articuloService.buscarPost(a,articleid) || usuario.getAdministrator()){
+            if (articuloService.buscarPost(a, articleid) || usuario.getAdministrator()) {
 
                 Articulo editar = articuloService.getById(Integer.parseInt(idArticulo));
                 attributes.put("articulo", editar);
                 List<Etiqueta> tags = etiquetaService.getByArticulo(Integer.parseInt(idArticulo));
                 StringBuilder res = new StringBuilder();
-                for(int i = 0; i<tags.size(); i++){
-                    if(i==tags.size()-1){
+                for (int i = 0; i < tags.size(); i++) {
+                    if (i == tags.size() - 1) {
                         res.append(tags.get(i).getEtiqueta());
-                    }else{
+                    } else {
                         res.append(tags.get(i).getEtiqueta()).append(",");
                     }
                 }
                 String ResultingTagString = String.valueOf(res);
                 attributes.put("etiquetas", ResultingTagString);
-            }else {
+            } else {
                 response.redirect("/errorPost");
             }
-
 
 
             return new ModelAndView(attributes, "editarPost.ftl");
@@ -222,13 +216,18 @@ public class Main {
             String[] tagsarray = etiquetas.split(",");
 //            Long articleid = articuloService.getNextID();
             Articulo art = new Articulo(titulo, cuerpo, autor, nowsql);
-            articuloService.insert(art);
+//            articuloService.insert(art);
+
+            Set<Etiqueta> etiquetas1 = new HashSet<>();
 //
 
-            for(String s : tagsarray){
+            for (String s : tagsarray) {
                 Etiqueta e = new Etiqueta(s, art);
-                etiquetaService.insert(e);
+                etiquetas1.add(e);
             }
+
+            art.setListaEtiquetas(etiquetas1);
+            articuloService.insert(art);
 
 
             response.redirect("/inicio");
@@ -249,7 +248,7 @@ public class Main {
 
             if (usuario1 != null) {
 
-                if( recordar!= null && recordar.equalsIgnoreCase("on")) {
+                if (recordar != null && recordar.equalsIgnoreCase("on")) {
 
 
                     Crypto crypto = new Crypto();
@@ -279,33 +278,32 @@ public class Main {
             Long articleid = Long.parseLong(idArticulo);
 
 
-                Usuario autor = usuario;
+            Usuario autor = usuario;
 
-                String titulo = request.queryParams("titulo");
-                String cuerpo = request.queryParams("cuerpo");
-                long now = System.currentTimeMillis();
-                java.sql.Date nowsql = new java.sql.Date(now);
-                Articulo art = new Articulo(articleid, titulo, cuerpo, autor, nowsql);
-                articuloService.update(art);
-                String tags = request.queryParams("etiquetas");
+            String titulo = request.queryParams("titulo");
+            String cuerpo = request.queryParams("cuerpo");
+            long now = System.currentTimeMillis();
+            java.sql.Date nowsql = new java.sql.Date(now);
+            Articulo art = new Articulo(articleid, titulo, cuerpo, autor, nowsql);
+            articuloService.update(art);
+            String tags = request.queryParams("etiquetas");
 
-                String[] tagArray = tags.split(",");
+            String[] tagArray = tags.split(",");
 
-                List<Etiqueta> l = etiquetaService.getByArticulo(articleid);
+            List<Etiqueta> l = etiquetaService.getByArticulo(articleid);
 
-                for (String aTagArray : tagArray) {
-                    boolean exists = false;
-                    for (Etiqueta e : l) {
-                        if (aTagArray.equalsIgnoreCase(e.getEtiqueta())) {
-                            exists = true;
-                        }
-                    }
-                    if (!exists) {
-                        etiquetaService.insert(new Etiqueta(aTagArray, art));
+            for (String aTagArray : tagArray) {
+                boolean exists = false;
+                for (Etiqueta e : l) {
+                    if (aTagArray.equalsIgnoreCase(e.getEtiqueta())) {
+                        exists = true;
                     }
                 }
-                response.redirect("/verMas/"+idArticulo);
-
+                if (!exists) {
+                    etiquetaService.insert(new Etiqueta(aTagArray, art));
+                }
+            }
+            response.redirect("/verMas/" + idArticulo);
 
 
             return "";
@@ -316,15 +314,13 @@ public class Main {
             String id = request.params("id");
             String articulo = request.params("articulo");
 
-            long idAutor= Integer.parseInt(id);
+            long idAutor = Integer.parseInt(id);
             long idArticulo = Integer.parseInt(articulo);
 
-            if (usuario != null && (idAutor == usuario.getId() || usuario.getAdministrator()))
-            {
+            if (usuario != null && (idAutor == usuario.getId() || usuario.getAdministrator())) {
                 articuloService.delete(articuloService.getById(idArticulo));
                 response.redirect("/inicio");
-            }
-            else {
+            } else {
                 response.redirect("/errorPost");
             }
 
@@ -339,12 +335,11 @@ public class Main {
             String pass = request.queryParams("pass");
             String autor = request.queryParams("autor");
             String admin = request.queryParams("admin");
-            Usuario u = new Usuario(username, nombre, pass, admin != null, autor!=null);
+            Usuario u = new Usuario(username, nombre, pass, admin != null, autor != null);
             usuarioService.insert(u);
             response.redirect("/inicio");
             return "";
         });
-
 
 
         get("/logOut", (request, response) -> {
@@ -369,7 +364,7 @@ public class Main {
         get("/verUsuarios", (request, response) -> {
             Map<String, Object> attributes = new HashMap<>();
 
-            attributes.put("usuarios",usuarioService.getAll());
+            attributes.put("usuarios", usuarioService.getAll());
 
             return new ModelAndView(attributes, "verUsuarios.ftl");
         }, freeMarkerEngine);
@@ -391,7 +386,107 @@ public class Main {
         }, freeMarkerEngine);
 
 
+        get("/like/:post", (request, response) -> {
 
+            String post = request.params("post");
+
+            int idPost = Integer.parseInt(post);
+
+            Usuario usuario = request.session(true).attribute("usuario");
+            Articulo articulo = articuloService.getById(idPost);
+            if (usuario != null) {
+
+                if (!likesService.existsUsuario(usuario.getId(), TipoLike.LIKE) && !likesService.existsUsuario(usuario.getId(), TipoLike.DISLIKE)) {
+
+
+
+
+                    Likes likes1 = new Likes(articulo, usuario, TipoLike.LIKE);
+
+                    likesService.guardar(likes1);
+
+
+                    response.redirect("/verMas/" + articulo.getId());
+
+                }else {
+
+                    if (likesService.existsUsuario(usuario.getId(), TipoLike.LIKE)){
+
+                        Likes likes = likesService.buscarByUsuario(usuario);
+                        likesService.borrar(likes);
+                    }
+
+                    if (likesService.existsUsuario(usuario.getId(), TipoLike.DISLIKE)){
+
+                        Likes likes = likesService.buscarByUsuario(usuario);
+                        likesService.borrar(likes);
+
+                        Likes likes1 = new Likes(articulo, usuario, TipoLike.LIKE);
+                        likesService.guardar(likes1);
+
+
+                    }
+
+
+                    response.redirect("/verMas/" + idPost);
+                }
+
+            } else {
+                response.redirect("/errorPost");
+            }
+            return "";
+        });
+
+        get("dislike/:post", (request, response) -> {
+
+            String post = request.params("post");
+
+            int idPost = Integer.parseInt(post);
+            Usuario usuario = request.session(true).attribute("usuario");
+            Articulo articulo = articuloService.getById(idPost);
+
+            if (usuario != null) {
+
+                if (!likesService.existsUsuario(usuario.getId(), TipoLike.DISLIKE) && !likesService.existsUsuario(usuario.getId(), TipoLike.LIKE)) {
+
+
+                    Likes likes1 = new Likes(articulo, usuario, TipoLike.DISLIKE);
+                    likesService.guardar(likes1);
+
+
+                    response.redirect("/verMas/" + articulo.getId());
+
+                }else {
+
+                    if (likesService.existsUsuario(usuario.getId(), TipoLike.DISLIKE)){
+                        Likes likes = likesService.buscarByUsuario(usuario);
+                        likesService.borrar(likes);
+
+                    }
+
+                    if (likesService.existsUsuario(usuario.getId(), TipoLike.LIKE)){
+
+                        Likes likes = likesService.buscarByUsuario(usuario);
+                        likesService.borrar(likes);
+
+                        Likes likes1 = new Likes(articulo, usuario, TipoLike.DISLIKE);
+                        likesService.guardar(likes1);
+
+
+                    }
+
+
+
+
+                    response.redirect("/verMas/" + idPost);
+                }
+
+            } else {
+                response.redirect("/errorPost");
+            }
+
+            return "";
+        });
 
 
         new Filtros().filtros();

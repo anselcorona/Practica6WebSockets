@@ -57,20 +57,12 @@ public class ArticuloDAOImpl extends CRUD<Articulo> implements ArticuloDAO  {
     @Override
     public List<Articulo> getPagination(int pag) {
         EntityManager em = getEntityManager();
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Articulo> criteriaQuery = builder.createQuery(Articulo.class);
-        Root<Articulo> from = criteriaQuery.from(Articulo.class);
-        CriteriaQuery<Articulo> select = criteriaQuery.select(from);
-        List<javax.persistence.criteria.Order> orderList = new ArrayList();
+        List<Articulo> list;
 
-        orderList.add(builder.asc(from.get("fecha")));
-        criteriaQuery.orderBy(orderList);
-        TypedQuery<Articulo> typedQuery = em.createQuery(select);
-        typedQuery.setFirstResult((pag-1)*5);
-        typedQuery.setMaxResults(5);
+        Query query = em.createQuery("select a from Articulo a").setFirstResult((pag -1) * 5).setMaxResults(5);
+        list = query.getResultList();
 
-
-        return typedQuery.getResultList();
+        return list;
     }
 
 

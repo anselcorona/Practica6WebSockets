@@ -3,6 +3,7 @@ package encapsulacion;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ public class Articulo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Articulo_id")
     private long id;
     @Column
     private String titulo;
@@ -24,11 +26,14 @@ public class Articulo implements Serializable {
     private Usuario autor;
     @Column
     private Date fecha;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "articulo", cascade = CascadeType.ALL)
     private Set<Comentario> listaComentarios;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "articulo", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Etiqueta> listaEtiquetas;
+
+    @OneToMany(mappedBy = "articulo", fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<Likes> likes = new HashSet<>();
 
     public Articulo() {
     }
@@ -102,5 +107,13 @@ public class Articulo implements Serializable {
 
     public void setListaEtiquetas(Set<Etiqueta> listaEtiquetas) {
         this.listaEtiquetas = listaEtiquetas;
+    }
+
+    public Set<Likes> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Likes> likes) {
+        this.likes = likes;
     }
 }
