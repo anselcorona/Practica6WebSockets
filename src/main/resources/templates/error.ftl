@@ -39,7 +39,7 @@
                     </div>
                     <div class="form-group no-margin" style="display: inline-block;text-align: center; horiz-align: center; vertical-align: center">
 
-                        <form method="get" action="/inicio" style="display: inline-block;text-align: center; horiz-align: center; vertical-align: center">
+                        <form method="get" action="/inicio/1" style="display: inline-block;text-align: center; horiz-align: center; vertical-align: center">
 
                             <button type="submit" class="btn btn-primary btn-block">
                                 Volver atras

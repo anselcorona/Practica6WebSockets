@@ -9,7 +9,9 @@
         <meta name="author" content="">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.tagsinput/0.4.2/bootstrap-tagsinput.css"/>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+              integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
+              crossorigin="anonymous">
 
 
         <title>Blog - Practica 3</title>
@@ -27,7 +29,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/inicio">Inicio</a>
+            <a class="navbar-brand" href="/inicio/1">Inicio</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
                     aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -51,7 +53,6 @@
                          <a class="nav-link" href="/">Log In</a>
                      </li>
                     </#if>
-
 
 
                 </ul>
@@ -84,7 +85,8 @@
                       <#list etiquetas as etiqueta>
                           <#assign y = etiqueta.articulo.id>
                           <#if (x == y?number) && etiqueta.articulo?? >
-                              <a href="/articulos?etiqueta=${etiqueta.etiqueta}" class="badge badge-primary">${etiqueta.etiqueta}</a>
+                              <a href="/articulos?etiqueta=${etiqueta.etiqueta}"
+                                 class="badge badge-primary">${etiqueta.etiqueta}</a>
                           </#if>
 
                       </#list>
@@ -92,26 +94,45 @@
                   <div class="card-footer text-muted">
                       Publicado el ${articulo.fecha} por
                       <a href="/ver/${articulo.autor.id}">${articulo.autor.nombre}</a>
-                      <a style="float: right" href="#" class="btn btn-primary btn-primary"><span class="far fa-thumbs-up"></span> Like</a>
+                      <a style="float: right" href="#" class="btn btn-primary btn-primary"><span
+                              class="far fa-thumbs-up"></span> Like</a>
                   </div>
               </div>
         </#list>
 
                 <!-- Pagination -->
                 <ul class="pagination justify-content-center mb-4">
-                    <#if (pagina??)>
-                           <#if (pagina?number != 0)>
-                      <li class="page-item">
-                          <a class="page-link" href="/inicio/pag/${pagina}/menos">&larr; Older</a>
-                      </li>
-                           </#if>
-
+                    <#if actual gt 1>
                         <li class="page-item">
-                            <a class="page-link" href="/inicio/pag/${pagina}/mas">Newer &rarr;</a>
+                            <a class="page-link" href="/inicio/${actual - 1}">&larr; Atras</a>
                         </li>
+
+                    <#else>
+                      <li class="page-item disabled">
+                          <a class="page-link" href="#">Atras &larr;</a>
+                      </li>
+
                     </#if>
 
+                    <#if paginas gt actual>
+                       <li class="page-item">
+                           <a class="page-link" href="/inicio/${actual + 1}">&rarr; Siguiente</a>
+                       </li>
+                    <#else>
+
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Siguiente &rarr;</a>
+                    </li>
+
+                    </#if>
+
+
                 </ul>
+
+
+
+
+            <#--</ul>-->
 
             </div>
 

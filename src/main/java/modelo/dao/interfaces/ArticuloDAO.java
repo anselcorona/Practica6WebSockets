@@ -22,5 +22,7 @@ public interface ArticuloDAO {
 
     List<Articulo> getAllByEtiqueta(String etiqueta);
 
+    int cantPaginas();
+
 
 }

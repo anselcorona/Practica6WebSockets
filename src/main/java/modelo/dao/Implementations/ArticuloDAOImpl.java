@@ -3,6 +3,9 @@ package modelo.dao.Implementations;
 import encapsulacion.Articulo;
 import modelo.dao.interfaces.ArticuloDAO;
 import modelo.servicios.Utils.CRUD;
+import org.hibernate.Criteria;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -48,21 +51,36 @@ public class ArticuloDAOImpl extends CRUD<Articulo> implements ArticuloDAO  {
     @Override
     public List<Articulo> getbyAutor(long id) {
 
+
         EntityManager em = getEntityManager();
-        Query query = em.createNamedQuery("Articulo.findArticulobyAuthorId");
-        query.setParameter("id", id);
-        return (List<Articulo>) query.getResultList();
+        try {
+            Query query = em.createNamedQuery("Articulo.findArticulobyAuthorId");
+            query.setParameter("id", id);
+            return (List<Articulo>) query.getResultList();
+        }catch (Exception e){
+            return null;
+        }finally {
+            em.close();
+        }
+
     }
 
     @Override
     public List<Articulo> getPagination(int pag) {
         EntityManager em = getEntityManager();
-        List<Articulo> list;
 
-        Query query = em.createQuery("select a from Articulo a").setFirstResult((pag -1) * 5).setMaxResults(5);
-        list = query.getResultList();
+        try {
+            Query query = em.createQuery("select a from Articulo a order by a.id desc");
 
-        return list;
+            query.setFirstResult((pag-1)*5);
+            query.setMaxResults(5);
+
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        } finally {
+            em.close();
+        }
     }
 
 
@@ -78,6 +96,22 @@ public class ArticuloDAOImpl extends CRUD<Articulo> implements ArticuloDAO  {
         Query query = em.createNamedQuery("Articulo.findArticulobyEtiqueta");
         query.setParameter("etiqueta", etiqueta);
         return (List<Articulo>) query.getResultList();
+    }
+
+    @Override
+    public int cantPaginas() {
+
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createNamedQuery("Articulo.findAllArticulo");
+            return  query.getResultList().size();
+        }catch (Exception e){
+            return -1;
+        }finally {
+            em.close();
+        }
+
+
     }
 
 

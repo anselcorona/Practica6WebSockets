@@ -52,6 +52,11 @@ public class ArticuloService implements ArticuloDAO {
     }
 
     @Override
+    public int cantPaginas() {
+        return articuloDAO.cantPaginas();
+    }
+
+    @Override
     public List<Articulo> getbyAutor(long id) {
         return articuloDAO.getbyAutor(id);
     }

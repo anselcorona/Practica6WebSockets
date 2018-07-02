@@ -71,49 +71,55 @@ public class Main {
                     usuario = usuario1;
                     request.session(true);
                     request.session().attribute("usuario", usuario);
-                    response.redirect("/inicio");
+                    response.redirect("/inicio/1");
 //                    return modelAndView(attributes, "inicio.ftl");
                 }
             }
             return new ModelAndView(attributes, "login.ftl");
         }, freeMarkerEngine);
 
-        get("/inicio", (request, response) -> {
+        get("/inicio/:pag", (request, response) -> {
+
+            String p = request.params("pag");
+            int pagina = Integer.parseInt(p);
 
             Map<String, Object> attributes = new HashMap<>();
-            attributes.put("titulo", "Inicio");
-
-            attributes.put("list", articuloService.getAll());
-
-
-            attributes.put("etiquetas", etiquetaService.getAll());
-            attributes.put("usuario", usuario);
-
-            return new ModelAndView(attributes, "inicio.ftl");
-        }, freeMarkerEngine);
-
-        get("/inicio/pag/:n/:operacion", (request, response) -> {
-            Map<String, Object> attributes = new HashMap<>();
-            String pag = request.params("n");
-            String op = request.params("operacion");
-            int pagina = Integer.parseInt(pag);
-            if (op.equalsIgnoreCase("mas")) {
-                pagina++;
-            } else {
-                pagina--;
-            }
-
-
             attributes.put("titulo", "Inicio");
 
             attributes.put("list", articuloService.getPagination(pagina));
+            attributes.put("actual", pagina);
 
-            attributes.put("pagina", pagina);
+            attributes.put("paginas", Math.ceil(articuloService.cantPaginas()/5f));
+
+
             attributes.put("etiquetas", etiquetaService.getAll());
             attributes.put("usuario", usuario);
 
             return new ModelAndView(attributes, "inicio.ftl");
         }, freeMarkerEngine);
+
+//        get("/inicio/pag/:n/:operacion", (request, response) -> {
+//            Map<String, Object> attributes = new HashMap<>();
+//            String pag = request.params("n");
+//            String op = request.params("operacion");
+//            int pagina = Integer.parseInt(pag);
+//            if (op.equalsIgnoreCase("mas")) {
+//                pagina++;
+//            } else {
+//                pagina--;
+//            }
+//
+//
+//            attributes.put("titulo", "Inicio");
+//
+//            attributes.put("list", articuloService.getPagination(pagina));
+//
+//            attributes.put("pagina", pagina);
+//            attributes.put("etiquetas", etiquetaService.getAll());
+//            attributes.put("usuario", usuario);
+//
+//            return new ModelAndView(attributes, "inicio.ftl");
+//        }, freeMarkerEngine);
 
 
         get("/verMas/:id", (request, response) -> {
@@ -230,7 +236,7 @@ public class Main {
             articuloService.insert(art);
 
 
-            response.redirect("/inicio");
+            response.redirect("/inicio/1");
             return "";
         });
 
@@ -266,7 +272,7 @@ public class Main {
                 usuario = usuario1;
                 request.session(true);
                 request.session().attribute("usuario", usuario);
-                response.redirect("/inicio");
+                response.redirect("/inicio/1");
             }
             return "";
         });
@@ -319,7 +325,7 @@ public class Main {
 
             if (usuario != null && (idAutor == usuario.getId() || usuario.getAdministrator())) {
                 articuloService.delete(articuloService.getById(idArticulo));
-                response.redirect("/inicio");
+                response.redirect("/inicio/1");
             } else {
                 response.redirect("/errorPost");
             }
@@ -337,7 +343,7 @@ public class Main {
             String admin = request.queryParams("admin");
             Usuario u = new Usuario(username, nombre, pass, admin != null, autor != null);
             usuarioService.insert(u);
-            response.redirect("/inicio");
+            response.redirect("/inicio/1");
             return "";
         });
 
@@ -348,7 +354,7 @@ public class Main {
             Session session = request.session(true);
             session.invalidate();
             response.removeCookie("/", "login");
-            response.redirect("/inicio");
+            response.redirect("/inicio/1");
 
             return "";
         });
