@@ -1,9 +1,8 @@
 package modelo.dao.interfaces;
 
-import encapsulacion.Comentario;
-import encapsulacion.Etiqueta;
-
 import java.util.List;
+
+import encapsulacion.Comentario;
 
 public interface ComentarioDAO {
 

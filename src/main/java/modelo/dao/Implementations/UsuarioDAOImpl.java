@@ -1,24 +1,14 @@
 package modelo.dao.Implementations;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import encapsulacion.Articulo;
-import encapsulacion.Usuario;
-import modelo.dao.interfaces.UsuarioDAO;
-import modelo.servicios.EntityServices.UsuarioService;
-import modelo.servicios.Utils.CRUD;
-import modelo.servicios.Utils.DBService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
+import encapsulacion.Usuario;
+import modelo.dao.interfaces.UsuarioDAO;
+import modelo.servicios.Utils.CRUD;
 
 public class UsuarioDAOImpl extends CRUD<Usuario> implements UsuarioDAO {
 

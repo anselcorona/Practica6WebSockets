@@ -1,16 +1,15 @@
 package modelo.dao.Implementations;
 
-import encapsulacion.Comentario;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import encapsulacion.Likes;
 import encapsulacion.TipoLike;
 import encapsulacion.Usuario;
 import modelo.dao.interfaces.LikesDAO;
 import modelo.servicios.Utils.CRUD;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.sql.ResultSet;
-import java.util.List;
 
 public class LikesDAOImp  extends CRUD<Likes> implements LikesDAO {
 

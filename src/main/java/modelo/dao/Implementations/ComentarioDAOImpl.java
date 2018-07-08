@@ -1,23 +1,13 @@
 package modelo.dao.Implementations;
 
-import encapsulacion.Comentario;
-import encapsulacion.Usuario;
-import modelo.dao.interfaces.ComentarioDAO;
-import modelo.servicios.EntityServices.ComentarioService;
-import modelo.servicios.EntityServices.UsuarioService;
-import modelo.servicios.Utils.CRUD;
-import modelo.servicios.Utils.DBService;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import encapsulacion.Comentario;
+import modelo.dao.interfaces.ComentarioDAO;
+import modelo.servicios.Utils.CRUD;
 
 public class ComentarioDAOImpl extends CRUD<Comentario> implements ComentarioDAO {
 

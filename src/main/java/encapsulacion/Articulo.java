@@ -1,11 +1,21 @@
 package encapsulacion;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 @NamedQueries({@NamedQuery(name = "Articulo.findAllArticulo", query = "select a from Articulo a order by a.fecha desc "),
@@ -14,7 +24,8 @@ import java.util.Set;
         @NamedQuery(name = "Articulo.findArticulobyEtiqueta", query = "select a from Articulo a, Etiqueta e where a.id = e.articulo.id and e.etiqueta = :etiqueta")})
 public class Articulo implements Serializable {
 
-    @Id
+    private static final long serialVersionUID = 1L;
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Articulo_id")
     private long id;

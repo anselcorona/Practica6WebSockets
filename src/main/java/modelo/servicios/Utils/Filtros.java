@@ -1,9 +1,9 @@
 package modelo.servicios.Utils;
 
-import encapsulacion.Usuario;
-import main.Main;
+import static spark.Spark.before;
+import static spark.Spark.halt;
 
-import static spark.Spark.*;
+import encapsulacion.Usuario;
 
 
 public class Filtros {

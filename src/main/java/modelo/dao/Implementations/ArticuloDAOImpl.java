@@ -1,20 +1,13 @@
 package modelo.dao.Implementations;
 
-import encapsulacion.Articulo;
-import modelo.dao.interfaces.ArticuloDAO;
-import modelo.servicios.Utils.CRUD;
-import org.hibernate.Criteria;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
+
+import encapsulacion.Articulo;
+import modelo.dao.interfaces.ArticuloDAO;
+import modelo.servicios.Utils.CRUD;
 
 public class ArticuloDAOImpl extends CRUD<Articulo> implements ArticuloDAO  {
 

@@ -1,23 +1,13 @@
 package modelo.dao.Implementations;
 
-import encapsulacion.Etiqueta;
-import encapsulacion.Usuario;
-import modelo.dao.interfaces.EtiquetaDAO;
-import modelo.servicios.EntityServices.ArticuloService;
-import modelo.servicios.EntityServices.EtiquetaService;
-import modelo.servicios.Utils.CRUD;
-import modelo.servicios.Utils.DBService;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import encapsulacion.Etiqueta;
+import modelo.dao.interfaces.EtiquetaDAO;
+import modelo.servicios.Utils.CRUD;
 
 public class EtiquetaDAOImpl extends CRUD<Etiqueta> implements EtiquetaDAO {
 

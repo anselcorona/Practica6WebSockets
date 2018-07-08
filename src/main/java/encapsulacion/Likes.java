@@ -8,7 +8,9 @@ import java.io.Serializable;
     @NamedQuery(name = "Likes.deleteById", query = "delete from Likes l where l.id = :id")})
 public class Likes implements Serializable {
 
-    @Id
+    private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Likes_ID")
     private Long id;
