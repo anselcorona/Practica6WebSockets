@@ -25,8 +25,13 @@ public class Usuario {
     @Column
     private Boolean autor;
 
-    @OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     Set<Likes> likes = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return String.format("id: %s username: %s nombre: %s password: %s administrador: %s autor: %s",id, username, nombre, password, administrator, autor);
+    }
 
     public Usuario() {
     }

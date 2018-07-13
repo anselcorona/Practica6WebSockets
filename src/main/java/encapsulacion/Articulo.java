@@ -46,6 +46,12 @@ public class Articulo implements Serializable {
     @OneToMany(mappedBy = "articulo", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Likes> likes = new HashSet<>();
 
+
+    @Override
+    public String toString() {
+        return String.format("id: %s Titulo: %s cuerpo: %s autor: %s fecha: %s",id, titulo, cuerpo, autor, fecha);
+    }
+
     public Articulo() {
     }
 

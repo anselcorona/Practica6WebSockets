@@ -1,28 +1,48 @@
 package main;
 
-import encapsulacion.*;
+import static spark.Spark.get;
+import static spark.Spark.post;
+import static spark.Spark.staticFiles;
+
+import java.io.StringWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import freemarker.template.Template;
+import org.eclipse.jetty.websocket.api.Session;
+
+import encapsulacion.Articulo;
+import encapsulacion.Comentario;
+import encapsulacion.Etiqueta;
+import encapsulacion.Likes;
+import encapsulacion.TipoLike;
+import encapsulacion.Usuario;
 import freemarker.template.Configuration;
 import freemarker.template.Version;
-import modelo.servicios.EntityServices.*;
+import modelo.servicios.EntityServices.ArticuloService;
+import modelo.servicios.EntityServices.ComentarioService;
+import modelo.servicios.EntityServices.EtiquetaService;
+import modelo.servicios.EntityServices.LikesService;
+import modelo.servicios.EntityServices.UsuarioService;
 import modelo.servicios.Utils.BootStrapService;
 import modelo.servicios.Utils.Crypto;
 import modelo.servicios.Utils.Filtros;
 //import org.jasypt.util.text.StrongTextEncryptor;
 import spark.ModelAndView;
-import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
-
-import java.util.*;
-import java.sql.SQLException;
-
-import static spark.Spark.*;
-
 public class Main {
 
+    public static List<Session> usuarioConectados = new ArrayList<>();
     public static Usuario usuario;
     static final String iv = "0123456789123456"; // This has to be 16 characters
     static final String secretKeyUSer = "qwerty987654321";
     static final String secretKeyContra = "123456789klk";
+
 
     public static void main(String[] args) throws SQLException {
 
@@ -42,6 +62,11 @@ public class Main {
 
         Configuration configuration = new Configuration(new Version(2, 3, 0));
         configuration.setClassForTemplateLoading(Main.class, "/templates");
+
+        // webSocket("/mensajeServidor", ServicioMensakesWebSocketHandler.class);
+        // init();
+
+
 
         FreeMarkerEngine freeMarkerEngine = new FreeMarkerEngine(configuration);
 
@@ -78,10 +103,10 @@ public class Main {
             return new ModelAndView(attributes, "login.ftl");
         }, freeMarkerEngine);
 
-        get("/inicio/:pag", (request, response) -> {
+        get("/inicio", (request, response) -> {
 
-            String p = request.params("pag");
-            int pagina = Integer.parseInt(p);
+
+            int pagina = 1;
 
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("titulo", "Inicio");
@@ -351,7 +376,7 @@ public class Main {
         get("/logOut", (request, response) -> {
 
             usuario = null;
-            Session session = request.session(true);
+            spark.Session session = request.session(true);
             session.invalidate();
             response.removeCookie("/", "login");
             response.redirect("/inicio/1");
@@ -493,6 +518,36 @@ public class Main {
 
             return "";
         });
+
+        
+       
+        get("/inicio/:pag", (request, response) -> {
+
+            StringWriter writer = new StringWriter();
+            Template template = configuration.getTemplate("paginacion.ftl");
+
+            String p = request.params("pag");
+            int pagina = Integer.parseInt(p);
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("titulo", "Inicio");
+
+            attributes.put("list", articuloService.getPagination(pagina));
+            attributes.put("actual", pagina);
+
+            attributes.put("paginas", Math.ceil(articuloService.cantPaginas()/5f));
+
+
+            attributes.put("etiquetas", etiquetaService.getAll());
+            attributes.put("usuario", usuario);
+
+            template.process(attributes, writer);
+            return writer;
+
+        });
+
+       
+        
 
 
         new Filtros().filtros();

@@ -26,6 +26,11 @@ public class Likes implements Serializable {
     @Enumerated(EnumType.STRING)
     private TipoLike tipoLike;
 
+    @Override
+    public String toString() {
+        return String.format("id: %s articulo: %s usuario: %s tipoLike: %s", id, articulo, usuario, tipoLike);
+    }
+
     public Likes() {
     }
 
