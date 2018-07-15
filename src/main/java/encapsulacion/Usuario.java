@@ -26,7 +26,7 @@ public class Usuario {
     private Boolean autor;
 
     @OneToMany(mappedBy = "usuario",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    Set<Likes> likes = new HashSet<>();
+    private Set<Likes> likes = new HashSet<>();
 
     @Override
     public String toString() {

@@ -16,16 +16,16 @@ dependencies {
     // https://mvnrepository.com/artifact/com.h2database/h2
     compile group: 'com.h2database', name: 'h2', version: '1.4.197'
     compile "com.sparkjava:spark-template-freemarker:2.5.5"
-    compile group: 'org.sql2o', name: 'sql2o', version: '1.5.4'
     compile group: 'org.slf4j',name: 'slf4j-simple', version: '1.7.21'
     testCompile group: 'junit', name: 'junit', version: '4.12'
-// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 
- compile 'com.j2html:j2html:1.0.0'
+
 
 // https://mvnrepository.com/artifact/org.jasypt/jasypt
     compile group: 'org.jasypt', name: 'jasypt', version: '1.9.2'
     compile 'org.hibernate:hibernate-core:5.1.0.Final'
     compile 'org.hibernate:hibernate-entitymanager:5.1.0.Final'
+
+  
+    compile 'org.webjars:jquery:3.2.1'
 }

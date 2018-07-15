@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import freemarker.template.Template;
 import org.eclipse.jetty.websocket.api.Session;
+import org.jasypt.util.text.BasicTextEncryptor;
 
 import encapsulacion.Articulo;
 import encapsulacion.Comentario;
@@ -23,6 +23,7 @@ import encapsulacion.Likes;
 import encapsulacion.TipoLike;
 import encapsulacion.Usuario;
 import freemarker.template.Configuration;
+import freemarker.template.Template;
 import freemarker.template.Version;
 import modelo.servicios.EntityServices.ArticuloService;
 import modelo.servicios.EntityServices.ComentarioService;
@@ -30,18 +31,14 @@ import modelo.servicios.EntityServices.EtiquetaService;
 import modelo.servicios.EntityServices.LikesService;
 import modelo.servicios.EntityServices.UsuarioService;
 import modelo.servicios.Utils.BootStrapService;
-import modelo.servicios.Utils.Crypto;
 import modelo.servicios.Utils.Filtros;
-//import org.jasypt.util.text.StrongTextEncryptor;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 public class Main {
 
-    public static List<Session> usuarioConectados = new ArrayList<>();
+    private static final String pass = "proyectoAjax";
+	public static List<Session> usuarioConectados = new ArrayList<>();
     public static Usuario usuario;
-    static final String iv = "0123456789123456"; // This has to be 16 characters
-    static final String secretKeyUSer = "qwerty987654321";
-    static final String secretKeyContra = "123456789klk";
 
 
     public static void main(String[] args) throws SQLException {
@@ -62,6 +59,7 @@ public class Main {
 
         Configuration configuration = new Configuration(new Version(2, 3, 0));
         configuration.setClassForTemplateLoading(Main.class, "/templates");
+        
 
         // webSocket("/mensajeServidor", ServicioMensakesWebSocketHandler.class);
         // init();
@@ -85,18 +83,20 @@ public class Main {
 
 
             if (llaveValor.length > 1) {
-                Crypto crypto = new Crypto();
+                
+                BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
+                textEncryptor.setPassword(pass);
 
                 System.out.println(llaveValor[0] + " contra: " + llaveValor[1]);
-                String user = crypto.decrypt(llaveValor[0], iv, secretKeyUSer);
-                String contra = crypto.decrypt(llaveValor[1], iv, secretKeyContra);
+                String user = textEncryptor.decrypt(llaveValor[0]);
+                String contra = textEncryptor.decrypt(llaveValor[1]);
 
                 Usuario usuario1 = usuarioService.validateLogIn(user, contra);
                 if (usuario1 != null) {
                     usuario = usuario1;
                     request.session(true);
                     request.session().attribute("usuario", usuario);
-                    response.redirect("/inicio/1");
+                    response.redirect("/inicio");
 //                    return modelAndView(attributes, "inicio.ftl");
                 }
             }
@@ -261,7 +261,7 @@ public class Main {
             articuloService.insert(art);
 
 
-            response.redirect("/inicio/1");
+            response.redirect("/inicio");
             return "";
         });
 
@@ -282,12 +282,13 @@ public class Main {
                 if (recordar != null && recordar.equalsIgnoreCase("on")) {
 
 
-                    Crypto crypto = new Crypto();
-                    String userEncrypt = crypto.encrypt(user, iv, secretKeyUSer);
-                    String contraEncrypt = crypto.encrypt(contra, iv, secretKeyContra);
+                    BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
+                    textEncryptor.setPassword(pass);
 
 
-//                final String decryptedData = crypto.decrypt(encryptedData, iv, secretKey);
+                    String userEncrypt = textEncryptor.encrypt(user);
+                    String contraEncrypt = textEncryptor.encrypt(contra);
+
 
                     System.out.println("user encryp: " + userEncrypt + " contra encryp: " + contraEncrypt);
 
@@ -297,7 +298,7 @@ public class Main {
                 usuario = usuario1;
                 request.session(true);
                 request.session().attribute("usuario", usuario);
-                response.redirect("/inicio/1");
+                response.redirect("/inicio");
             }
             return "";
         });
@@ -350,7 +351,7 @@ public class Main {
 
             if (usuario != null && (idAutor == usuario.getId() || usuario.getAdministrator())) {
                 articuloService.delete(articuloService.getById(idArticulo));
-                response.redirect("/inicio/1");
+                response.redirect("/inicio");
             } else {
                 response.redirect("/errorPost");
             }
@@ -368,7 +369,7 @@ public class Main {
             String admin = request.queryParams("admin");
             Usuario u = new Usuario(username, nombre, pass, admin != null, autor != null);
             usuarioService.insert(u);
-            response.redirect("/inicio/1");
+            response.redirect("/inicio");
             return "";
         });
 
@@ -379,7 +380,7 @@ public class Main {
             spark.Session session = request.session(true);
             session.invalidate();
             response.removeCookie("/", "login");
-            response.redirect("/inicio/1");
+            response.redirect("/inicio");
 
             return "";
         });
@@ -545,6 +546,15 @@ public class Main {
             return writer;
 
         });
+
+        get("/mensajesAdmin", (request, response) -> {
+            Map<String, Object> attributes = new HashMap<>();
+
+            attributes.put("titulo", "Chats");
+            attributes.put("usuario", usuario);
+
+            return new ModelAndView(attributes, "mensajesAdmin.ftl");
+        }, freeMarkerEngine);
 
        
         

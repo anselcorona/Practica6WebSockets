@@ -37,7 +37,7 @@ public class UsuarioDAOImpl extends CRUD<Usuario> implements UsuarioDAO {
     public List<Usuario> getAll() {
         EntityManager em = getEntityManager();
         Query query = em.createNamedQuery("Usuario.findAllUsuario");
-        return (List<Usuario>) query.getResultList();
+        return  query.getResultList();
     }
 
     @Override
