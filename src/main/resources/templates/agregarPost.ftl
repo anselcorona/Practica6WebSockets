@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
   <title>Blog Post - Start Bootstrap Template</title>
 
@@ -58,9 +58,13 @@
 
 
         </div>
-       
-        <#include "hablar.ftl">
+        <#if (usuario??)>
 
+        <#if (!usuario.administrator)>
+          <#include "hablar.ftl">
+
+        </#if>
+      </#if>
       </div>
       <!-- /.row -->
 
@@ -68,7 +72,7 @@
     <!-- /.container -->
 
     <br>
-    
+
     <!-- Footer -->
     <footer class="py-5 bg-dark">
       <div class="container">

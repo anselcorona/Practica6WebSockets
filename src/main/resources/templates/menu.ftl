@@ -16,7 +16,7 @@
                     </li>
 
                     <#if (usuario??)>
-                        <#if (usuario.administrador??)>
+                        <#if (usuario.administrator)>
                           <li class="nav-item">
                              <a class="nav-link" href="/mensajesAdmin">Mensajes</a>
                          </li>

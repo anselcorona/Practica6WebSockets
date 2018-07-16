@@ -64,7 +64,14 @@
                 </div>
 
 
-              <#include "hablar.ftl">
+                <#if (usuario??)>
+
+                <#if (!usuario.administrator)>
+                  <#include "hablar.ftl">
+        
+                </#if>
+              </#if>
+
 
             </div>
             <!-- /.row -->
